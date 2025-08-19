@@ -1,18 +1,20 @@
-from fastapi import APIRouter
-from sqlmodel import Session, select
-from ..db import engine
-from ..models import Hospital, Request
+from fastapi import APIRouter, Depends
+from sqlmodel import select, Session
+from ..db import get_session
+from ..models import Hospital, PatientRequest  # Correct model name
 
 router = APIRouter(prefix="/search", tags=["Search"])
 
+# Search hospitals by name (case-insensitive)
 @router.get("/hospital")
-def search_hospital(name: str):
-    with Session(engine) as session:
-        result = session.exec(select(Hospital).where(Hospital.name.ilike(f"%{name}%"))).all()
-        return result
+def search_hospital(name: str, session: Session = Depends(get_session)):
+    result = session.exec(select(Hospital).where(Hospital.name.ilike(f"%{name}%"))).all()
+    return result
 
+# Search patient requests by requested resource
 @router.get("/requests")
-def search_request(resource: str):
-    with Session(engine) as session:
-        result = session.exec(select(Request).where(Request.resource.ilike(f"%{resource}%"))).all()
-        return result
+def search_request(resource: str, session: Session = Depends(get_session)):
+    result = session.exec(
+        select(PatientRequest).where(PatientRequest.requested_resource.ilike(f"%{resource}%"))
+    ).all()
+    return result

@@ -4,12 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eaf889ad-6510-4649-a01c-85219f3c730c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Hospital-Resource-Allocation-System.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="eaf889ad-6510-4649-a01c-85219f3c730c" name="Changes" comment="Created Basic Layout and Structure of the Project.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/routers/allocations.py" beforeDir="false" afterPath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/routers/allocations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/routers/hospitals.py" beforeDir="false" afterPath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/routers/hospitals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/routers/requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/routers/requests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/routers/ws.py" beforeDir="false" afterPath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/routers/ws.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/static/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/static/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/static/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/static/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/hospital-resource-alloc/backend/app/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,11 +29,28 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 2
-}]]></component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;DeTraRoX&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/DeTraRoX/Hospital-Resource-Allocation-System&quot;,
+    &quot;accountId&quot;: &quot;67a7ce3f-001b-49fe-8751-0d70eaac501e&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectId" id="31VoRyctcqcOJB2qVsxCcxqG11c" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="1" id="Add" />
@@ -37,16 +59,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="Hospital-Resource-Allocation-System" />
@@ -166,6 +188,15 @@
       <option name="presentableId" value="Default" />
       <updated>1755618596613</updated>
     </task>
+    <task id="LOCAL-00001" summary="Created Basic Layout and Structure of the Project.">
+      <option name="closed" value="true" />
+      <created>1755625865000</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1755625865000</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -198,6 +229,13 @@
                       </list>
                     </value>
                   </entry>
+                  <entry key="user">
+                    <value>
+                      <list>
+                        <option value="*" />
+                      </list>
+                    </value>
+                  </entry>
                 </map>
               </option>
             </State>
@@ -205,5 +243,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Created Basic Layout and Structure of the Project." />
+    <option name="LAST_COMMIT_MESSAGE" value="Created Basic Layout and Structure of the Project." />
   </component>
 </project>

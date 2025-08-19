@@ -1,28 +1,40 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
-from ..db import engine
+from ..db import get_session
 from ..models import Hospital
+from .ws import broadcast_update
 
-router = APIRouter(prefix="/hospitals", tags=["Hospitals"])
+router = APIRouter(prefix="/hospitals", tags=["Hospital"])
 
-@router.post("/", response_model=Hospital)
-def create_hospital(hospital: Hospital):
-    with Session(engine) as session:
-        session.add(hospital)
-        session.commit()
-        session.refresh(hospital)
-        return hospital
+# ✅ Always return hospital 1
+@router.get("/")
+def get_hospital(session: Session = Depends(get_session)):
+    hospital = session.exec(select(Hospital).where(Hospital.id == 1)).first()
+    return hospital
 
-@router.get("/", response_model=list[Hospital])
-def list_hospitals():
-    with Session(engine) as session:
-        hospitals = session.exec(select(Hospital)).all()
-        return hospitals
+# ✅ Update hospital resources & broadcast changes
+@router.put("/")
+async def update_hospital_resources(updated: Hospital, session: Session = Depends(get_session)):
+    hospital = session.exec(select(Hospital).where(Hospital.id == 1)).first()
+    if not hospital:
+        return {"error": "Hospital not found"}
 
-@router.get("/{hospital_id}", response_model=Hospital)
-def get_hospital(hospital_id: int):
-    with Session(engine) as session:
-        hospital = session.get(Hospital, hospital_id)
-        if not hospital:
-            raise HTTPException(status_code=404, detail="Hospital not found")
-        return hospital
+    # Update values
+    hospital.total_beds = updated.total_beds
+    hospital.available_beds = updated.available_beds
+    hospital.ventilators = updated.ventilators
+    hospital.available_ventilators = updated.available_ventilators
+
+    session.add(hospital)
+    session.commit()
+    session.refresh(hospital)
+
+    # 🔔 Broadcast new summary to all dashboards
+    await broadcast_update({
+        "total_beds": hospital.total_beds,
+        "available_beds": hospital.available_beds,
+        "ventilators": hospital.ventilators,
+        "available_ventilators": hospital.available_ventilators,
+    })
+
+    return {"status": "ok", "hospital": hospital}

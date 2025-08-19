@@ -2,163 +2,56 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartCare Hospital Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Hospital Dashboard</title>
+  <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <h1>🏥 SmartCare Hospital</h1>
-    <div class="header-icons">
-      <span>⏰ Time</span>
-      <span>🔒</span>
-    </div>
-  </header>
 
-  <!-- Resource Summary -->
-  <section class="resources">
-    <div class="resource-card">
-      <h3>ICU Beds</h3>
-      <p>Total: 10</p>
-      <p>Used: 8</p>
-      <p>Free: 2 <span class="status yellow">🟡</span></p>
-    </div>
-    <div class="resource-card">
-      <h3>Normal Beds</h3>
-      <p>Total: 25</p>
-      <p>Used: 18</p>
-      <p>Free: 7 <span class="status green">🟢</span></p>
-    </div>
-    <div class="resource-card">
-      <h3>Ventilators</h3>
-      <p>Total: 5</p>
-      <p>Used: 4</p>
-      <p>Free: 1 <span class="status red">🔴</span></p>
-    </div>
-    <div class="resource-card">
-      <h3>Oxygen Cyl.</h3>
-      <p>Total: 12</p>
-      <p>Used: 10</p>
-      <p>Free: 2 <span class="status yellow">🟡</span></p>
-    </div>
-  </section>
+<h1>Hospital Dashboard</h1>
+<p>Clock: <span id="clock"></span></p>
+<div class="cards-container">
+  <div class="card" id="total-patients">Total Patients: 0</div>
+  <div class="card" id="occupied-beds">Occupied Beds: 0</div>
+  <div class="card" id="available-vents">Available Ventilators: 0</div>
+  <div class="card" id="available-oxygen">Oxygen Cylinders: 0</div>
+</div>
 
-  <!-- Patient Registration & Waiting List -->
-  <section class="patient-waiting">
-    <div class="registration">
-      <h2>Patient Registration</h2>
-      <form id="patient-form">
-        <input type="text" placeholder="Name" required>
-        <input type="number" placeholder="Age" required>
-        <select>
-          <option>Critical</option>
-          <option>Serious</option>
-          <option>Normal</option>
-        </select>
-        <select>
-          <option>ICU</option>
-          <option>Bed</option>
-          <option>Ventilator</option>
-          <option>Oxygen</option>
-        </select>
-        <button type="submit">Register Patient</button>
-      </form>
-    </div>
 
-    <div class="waiting-list">
-      <h2>Waiting List</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Resource</th>
-            <th>Critical</th>
-            <th>Serious</th>
-            <th>Normal</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>ICU</td>
-            <td>2</td>
-            <td>3</td>
-            <td>0</td>
-          </tr>
-          <tr>
-            <td>Bed</td>
-            <td>0</td>
-            <td>1</td>
-            <td>4</td>
-          </tr>
-          <tr>
-            <td>Vent</td>
-            <td>1</td>
-            <td>0</td>
-            <td>1</td>
-          </tr>
-          <tr>
-            <td>Oxygen</td>
-            <td>0</td>
-            <td>2</td>
-            <td>1</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+<h2>Hospital Resources</h2>
+<div>Beds: <span id="beds"></span>
+  <div class="progress"><div class="progress-bar" id="beds-bar"></div></div>
+</div>
+<div>Ventilators: <span id="ventilators"></span>
+  <div class="progress"><div class="progress-bar" id="vents-bar"></div></div>
+</div>
+<div>Oxygen Cylinders: <span id="oxygen"></span></div>
+<div>Staff: <span id="staff"></span></div>
 
-  <!-- Logs -->
-  <section class="logs">
-    <h2>Recent Allocations / Logs</h2>
-    <ul>
-      <li>✅ Patient A allocated ICU-1 (Critical)</li>
-      <li>⏳ Patient B added to ICU waiting list (Normal)</li>
-      <li>🔄 ICU-2 released by Patient C → reallocated to Patient D</li>
-    </ul>
-  </section>
+<h2>Active Patients</h2>
+<table>
+  <thead>
+    <tr><th>ID</th><th>Condition</th><th>Resource</th><th>Action</th></tr>
+  </thead>
+  <tbody id="active-patients"></tbody>
+</table>
 
-  <!-- Resource Release -->
-  <section class="release">
-    <h2>Resource Release / Discharge</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Resource</th>
-          <th>Type</th>
-          <th>Allocated To</th>
-          <th>Condition</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>ICU-1</td>
-          <td>ICU</td>
-          <td>Patient A</td>
-          <td>Critical</td>
-          <td><button>Discharge</button></td>
-        </tr>
-        <tr>
-          <td>BED-5</td>
-          <td>Bed</td>
-          <td>Patient F</td>
-          <td>Normal</td>
-          <td><button>Discharge</button></td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
+<h2>Waiting Patients</h2>
+<table>
+  <thead>
+    <tr><th>ID</th><th>Condition</th><th>Requested Resource</th></tr>
+  </thead>
+  <tbody id="waiting-patients"></tbody>
+</table>
 
-  <!-- Analytics -->
-  <section class="analytics">
-    <h2>Analytics / Reports</h2>
-    <ul>
-      <li>• Average Wait Time (Critical: 2 min | Normal: 15 min)</li>
-      <li>• Total Patients Served: 45</li>
-      <li>• Utilization: ICU 80% | Beds 72% | Ventilators 90% | O2 83%</li>
-      <li>[ Chart / Graph here → Pie or Bar Graph ]</li>
-    </ul>
-  </section>
+<h2>Register Patient</h2>
+<form id="patient-form">
+  <input type="text" id="condition" placeholder="Condition" required>
+  <button type="submit">Register</button>
+</form>
 
+<h2>Logs</h2>
+<ul id="logs"></ul>
+
+<script src="/static/js/dashboard.js"></script>
 </body>
 </html>

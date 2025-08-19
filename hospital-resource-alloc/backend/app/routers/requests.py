@@ -1,20 +1,29 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
-from ..db import engine
-from ..models import Request
+from ..db import get_session
+from ..models import PatientRequest
 
 router = APIRouter(prefix="/requests", tags=["Requests"])
 
-@router.post("/", response_model=Request)
-def create_request(req: Request):
-    with Session(engine) as session:
-        session.add(req)
-        session.commit()
-        session.refresh(req)
-        return req
+# ✅ Create a new patient request
+@router.post("/")
+def create_request(request: dict, session: Session = Depends(get_session)):
+    new_request = PatientRequest(
+        hospital_id=1,  # Always hospital 1
+        condition=request["condition"],
+        requested_resource=request.get("requested_resource", "bed"),  # fallback
+        status="waiting"
+    )
+    session.add(new_request)
+    session.commit()
+    session.refresh(new_request)
+    return new_request
 
-@router.get("/", response_model=list[Request])
-def list_requests():
-    with Session(engine) as session:
-        reqs = session.exec(select(Request)).all()
-        return reqs
+# ✅ Get all waiting patients for hospital 1
+@router.get("/waiting/1")
+def get_waiting_patients(session: Session = Depends(get_session)):
+    statement = select(PatientRequest).where(
+        PatientRequest.hospital_id == 1,
+        PatientRequest.status == "waiting"
+    )
+    return session.exec(statement).all()
