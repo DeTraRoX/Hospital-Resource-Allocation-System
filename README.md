@@ -37,15 +37,12 @@ Dynamic Database Management: Utilizes SQLModel for a smooth, type-safe interacti
 📸 Demo & Screenshots
 Dashboard Overview
 Get a live look at all available resources and active patient allocations.
-<img src="https://raw.githubusercontent.com/DeTraRoX/Hospital-Resource-Allocation-System/main/images/dashboard.png" alt="Dashboard Screenshot" />
 
 Patient Registration
 Register new patients with their details and resource requirements.
-<img src="https://raw.githubusercontent.com/DeTraRoX/Hospital-Resource-Allocation-System/main/images/registration.png" alt="Patient Registration Form" />
 
 Real-time Activity Log
 Watch as events unfold with a live feed of patient registrations and resource allocations.
-<img src="https://raw.githubusercontent.com/DeTraRoX/Hospital-Resource-Allocation-System/main/images/chart%26logs.png" alt="Real-time Activity Log" />
 
 ⚙️ Installation and Setup
 Follow these steps to get the project up and running on your local machine.
@@ -69,6 +66,7 @@ Our project is organized for clarity and maintainability with a clean, logical f
 ├── .venv/                 # Python virtual environment
 ├── .gitignore             # Files ignored by Git
 └── README.md              # Project information
+
 2. Clone the Repository
 Open your terminal and clone the project to your local machine:
 
