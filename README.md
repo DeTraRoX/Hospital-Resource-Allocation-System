@@ -89,6 +89,7 @@ Install all required packages from the requirements.txt file:
 Bash
 
 pip install -r backend/requirements.txt
+
 5. Run the Application
 Launch the FastAPI application using Uvicorn. The --reload flag enables live updates as you make changes to the code.
 
