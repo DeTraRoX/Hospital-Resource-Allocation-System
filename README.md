@@ -50,8 +50,7 @@ This application empowers hospital administrators to make **data-driven, real-ti
 - **Dashboard Overview** – Real-time hospital resources at a glance.  
 - **Patient Registration** – Add new patients with resource requirements.  
 - **Activity Log** – Live stream of hospital events.  
-> *(Insert screenshots here once available)*  
-
+ 
 ---
 
 ## ⚙️ Installation & Setup
@@ -113,4 +112,7 @@ Here’s how you can help:
 This project is licensed under the MIT License.
 Feel free to use, modify, and distribute it.
 
-<p align="center">🚑 Built with ❤️ to make hospital resource management faster, fairer, and more efficient.</p> 
+<h4 align="center">🚑 Built with ❤️ to make hospital resource management faster, fairer, and more efficient.</h4>
+
+
+
