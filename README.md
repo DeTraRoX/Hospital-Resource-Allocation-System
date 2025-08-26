@@ -19,13 +19,8 @@
   <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/github/actions/workflow/status/DeTraRoX/Hospital-Resource-Allocation-System/ci.yml?branch=main&style=for-the-badge&logo=github" alt="CI/CD Status" />
-  <img src="https://img.shields.io/github/actions/workflow/status/DeTraRoX/Hospital-Resource-Allocation-System/tests.yml?label=tests&style=for-the-badge&logo=pytest&logoColor=white" alt="Tests" />
-  <img src="https://img.shields.io/github/license/DeTraRoX/Hospital-Resource-Allocation-System?style=for-the-badge" alt="License" />
-</p>
 
----
+--
 
 ## 🌟 Overview
 In today’s fast-paced healthcare environment, **efficient resource management** is a life-saving necessity.  
@@ -55,7 +50,6 @@ This application empowers hospital administrators to make **data-driven, real-ti
 - **Dashboard Overview** – Real-time hospital resources at a glance.  
 - **Patient Registration** – Add new patients with resource requirements.  
 - **Activity Log** – Live stream of hospital events.  
-
 > *(Insert screenshots here once available)*  
 
 ---
@@ -119,4 +113,4 @@ Here’s how you can help:
 This project is licensed under the MIT License.
 Feel free to use, modify, and distribute it.
 
-<p align="center">🚑 Built with ❤️ to make hospital resource management faster, fairer, and more efficient.</p> ```
+<p align="center">🚑 Built with ❤️ to make hospital resource management faster, fairer, and more efficient.</p> 
