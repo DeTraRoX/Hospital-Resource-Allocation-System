@@ -112,7 +112,8 @@ Here’s how you can help:
 This project is licensed under the MIT License.
 Feel free to use, modify, and distribute it.
 
-<h4 align="center">🚑 Built with ❤️ to make hospital resource management faster, fairer, and more efficient.</h4>
+---
+
 
 
 
