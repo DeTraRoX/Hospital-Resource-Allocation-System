@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🏥 Hospital Resource Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #e3f2fd, #fce4ec);
+      background-attachment: fixed;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .card {
+      border-radius: 15px;
+      background-color: #ffffff;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+    }
+
+    .section-title {
+      margin-top: 40px;
+      margin-bottom: 20px;
+      color: #0d6efd;
+      border-bottom: 2px solid #0d6efd;
+      padding-bottom: 5px;
+      scroll-margin-top: 80px;
+    }
+
+    .dropdown-menu {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .hospital-logo {
+      height: 40px;
+      width: 40px;
+      margin-right: 10px;
+      border-radius: 8px;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+    }
+
+    .search-container {
+      position: relative;
+      min-width: 300px;
+    }
+
+    #searchBar {
+      min-width: 280px;
+      height: 45px;
+      font-size: 16px;
+      border-radius: 25px;
+      padding-left: 20px;
+      border: none;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    #searchBar:focus {
+      box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+      border: 2px solid #ffffff;
+    }
+
+    .suggestion-item {
+      cursor: pointer;
+      padding: 10px 15px;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.2s ease;
+    }
+
+    .suggestion-item:hover {
+      background-color: #f8f9fa;
+    }
+
+    .suggestion-item:focus {
+      background-color: #e9ecef;
+      outline: none;
+    }
+
+    .suggestion-icon {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1050;
+    }
+
+    .custom-toast {
+      min-width: 300px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .toast-success {
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+
+    .toast-error {
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+
+    .toast-info {
+      background-color: #d1ecf1;
+      border: 1px solid #bee5eb;
+      color: #0c5460;
+    }
+
+    .status-active {
+      background-color: #d4edda;
+    }
+
+    .status-completed {
+      background-color: #f8f9fa;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="toast-container"></div>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="#">
+      <svg class="hospital-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#E85A4F"/>
+            <stop offset="100%" style="stop-color:#4A90A4"/>
+          </linearGradient>
+        </defs>
+        <rect x="5" y="5" width="90" height="90" rx="20" ry="20" fill="url(#bgGradient)"/>
+        <rect x="15" y="15" width="70" height="70" rx="15" ry="15" fill="white"/>
+        <rect x="42" y="25" width="16" height="40" rx="2" fill="#20B2AA"/>
+        <rect x="30" y="37" width="40" height="16" rx="2" fill="#20B2AA"/>
+        <g transform="translate(55, 45) scale(0.8)">
+          <path d="M12,21.35l-1.45-1.32C5.4,15.36,2,12.28,2,8.5 C2,5.42,4.42,3,7.5,3c1.74,0,3.41,0.81,4.5,2.09C13.09,3.81,14.76,3,16.5,3 C19.58,3,22,5.42,22,8.5c0,3.78-3.4,6.86-8.55,11.54L12,21.35z" fill="#E85A4F"/>
+        </g>
+      </svg>
+      SmartCare Hospital
+    </a>
+    <div class="search-container d-flex" role="search">
+      <input id="searchBar" class="form-control me-2" type="search" placeholder="Search sections, patients, resources..." aria-label="Search">
+      <ul id="suggestions" class="dropdown-menu w-100 position-absolute mt-5" style="display: none; z-index: 1000;"></ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container my-4">
+
+  <h3 id="resources" class="section-title">💡 Resource Availability</h3>
+  <div class="row text-center">
+    <div class="col-md-3"><div class="card shadow p-3"><h5>🛏 Beds</h5><p><b id="beds-count">0</b> Available</p></div></div>
+    <div class="col-md-3"><div class="card shadow p-3"><h5>🏥 ICU</h5><p><b id="icu-count">0</b> Available</p></div></div>
+    <div class="col-md-3"><div class="card shadow p-3"><h5>🫁 Ventilators</h5><p><b id="vent-count">0</b> Available</p></div></div>
+    <div class="col-md-3"><div class="card shadow p-3"><h5>🧪 Oxygen</h5><p><b id="oxy-count">0</b> Available</p></div></div>
+  </div>
+
+  <h3 id="registration" class="section-title">📝 Patient Registration</h3>
+  <form id="patientForm" class="row g-3">
+    <div class="col-md-4">
+      <label class="form-label">Name</label>
+      <input id="name" type="text" class="form-control" placeholder="Enter name" required>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Age</label>
+      <input id="age" type="number" class="form-control" placeholder="Age" required>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Condition</label>
+      <select id="condition" class="form-select" required>
+        <option value="critical">Critical</option>
+        <option value="serious">Serious</option>
+        <option value="normal">Normal</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Resource Needed</label>
+      <select id="resource" class="form-select" required>
+        <option value="bed">Bed</option>
+        <option value="icu">ICU</option>
+        <option value="ventilator">Ventilator</option>
+        <option value="oxygen">Oxygen</option>
+      </select>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">Register Patient</button>
+    </div>
+  </form>
+
+  <h3 id="waiting-list" class="section-title">⏳ Waiting List</h3>
+  <table class="table table-bordered">
+    <thead class="table-light">
+      <tr><th>Name</th><th>Age</th><th>Condition</th><th>Requested Resource</th><th>Status</th></tr>
+    </thead>
+    <tbody id="waiting-body"></tbody>
+  </table>
+
+  <h3 id="logs" class="section-title">📜 Allocation Logs</h3>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead class="table-light">
+        <tr>
+          <th>Patient Name</th>
+          <th>Resource Type</th>
+          <th>Allocated Time</th>
+          <th>Deallocated Time</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="logs-body"></tbody>
+    </table>
+  </div>
+
+  <h3 id="discharge" class="section-title">🚪 Discharge / Release Resources</h3>
+  <table class="table table-bordered">
+    <thead class="table-light"><tr><th>Patient</th><th>Resource</th><th>Action</th></tr></thead>
+    <tbody id="discharge-body"></tbody>
+  </table>
+
+  <h3 id="analytics" class="section-title">📊 Real-Time Analytics</h3>
+  <canvas id="resourceChart" height="100"></canvas>
+</div>
+
+<div class="card mt-4">
+  <div class="card-body">
+    <h5 class="card-title">Patients Admitted Over Time</h5>
+    <canvas id="patientChart" height="100"></canvas>
+  </div>
+</div>
+
+<script>
+function showToast(message, type = 'info', duration = 3000) {
+  const toastContainer = document.querySelector('.toast-container');
+  const toastEl = document.createElement('div');
+  toastEl.className = `toast custom-toast toast-${type} show`;
+  toastEl.setAttribute('role', 'alert');
+  toastEl.innerHTML = `
+    <div class="toast-header">
+      <strong class="me-auto">
+        ${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}
+        ${type === 'success' ? 'Success' : type === 'error' ? 'Error' : 'Info'}
+      </strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+    </div>
+    <div class="toast-body">${message}</div>
+  `;
+  toastContainer.appendChild(toastEl);
+  setTimeout(() => toastEl.remove(), duration);
+  toastEl.querySelector('.btn-close').addEventListener('click', () => toastEl.remove());
+}
+
+const searchData = [
+  { name: "Resource Availability", id: "resources", icon: "💡", keywords: ["resource", "availability", "beds", "icu", "ventilators", "oxygen"] },
+  { name: "Patient Registration", id: "registration", icon: "📝", keywords: ["registration", "register", "patient", "form", "admission"] },
+  { name: "Waiting List", id: "waiting-list", icon: "⏳", keywords: ["waiting", "list", "queue", "pending"] },
+  { name: "Allocation Logs", id: "logs", icon: "📜", keywords: ["logs", "allocation", "history", "records"] },
+  { name: "Discharge", id: "discharge", icon: "🚪", keywords: ["discharge", "release", "resources", "free"] },
+  { name: "Analytics", id: "analytics", icon: "📊", keywords: ["analytics", "charts", "statistics", "reports"] }
+];
+
+const searchBar = document.getElementById("searchBar");
+const suggestions = document.getElementById("suggestions");
+
+function showSuggestions(filtered) {
+  if (filtered.length === 0) {
+    suggestions.style.display = "none";
+    return;
+  }
+  suggestions.innerHTML = "";
+  filtered.forEach((item, index) => {
+    const li = document.createElement("li");
+    const button = document.createElement("button");
+    button.className = "suggestion-item";
+    button.innerHTML = `<span class="suggestion-icon">${item.icon}</span><span>${item.name}</span>`;
+    button.addEventListener("click", () => navigateToSection(item.id));
+    button.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        navigateToSection(item.id);
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        const next = suggestions.children[index + 1];
+        if (next) next.querySelector("button").focus();
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        const prev = suggestions.children[index - 1];
+        if (prev) prev.querySelector("button").focus();
+        else searchBar.focus();
+      }
+    });
+    li.appendChild(button);
+    suggestions.appendChild(li);
+  });
+  suggestions.style.display = "block";
+}
+
+function navigateToSection(sectionId) {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth", block: "start" });
+    searchBar.value = "";
+    suggestions.style.display = "none";
+    searchBar.blur();
+  }
+}
+
+function filterSuggestions(query) {
+  if (!query.trim()) return [];
+  const lowerQuery = query.toLowerCase();
+  return searchData.filter(item =>
+    item.name.toLowerCase().includes(lowerQuery) ||
+    item.keywords.some(keyword => keyword.toLowerCase().includes(lowerQuery))
+  );
+}
+
+searchBar.addEventListener("input", (e) => {
+  const query = e.target.value;
+  const filtered = filterSuggestions(query);
+  showSuggestions(filtered);
+});
+
+searchBar.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    const query = e.target.value.toLowerCase();
+    const filtered = filterSuggestions(query);
+    if (filtered.length > 0) navigateToSection(filtered[0].id);
+  } else if (e.key === "ArrowDown") {
+    e.preventDefault();
+    const firstSuggestion = suggestions.querySelector(".suggestion-item");
+    if (firstSuggestion) firstSuggestion.focus();
+  } else if (e.key === "Escape") {
+    suggestions.style.display = "none";
+    searchBar.blur();
+  }
+});
+
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".search-container")) {
+    suggestions.style.display = "none";
+  }
+});
+
+const ctx1 = document.getElementById("resourceChart").getContext("2d");
+const resourceChart = new Chart(ctx1, {
+  type: "bar",
+  data: {
+    labels: ["Beds", "ICU", "Ventilators", "Oxygen"],
+    datasets: [{
+      label: "Available Resources",
+      data: [0, 0, 0, 0],
+      backgroundColor: ["#0d6efd", "#6610f2", "#20c997", "#ffc107"]
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } }
+  }
+});
+
+const ctx2 = document.getElementById("patientChart").getContext("2d");
+const patientChart = new Chart(ctx2, {
+  type: "line",
+  data: {
+    labels: [],
+    datasets: [{
+      label: "Patients Admitted",
+      data: [],
+      borderColor: "#0d6efd",
+      backgroundColor: "rgba(13, 110, 253, 0.2)",
+      tension: 0.3,
+      fill: true,
+      pointRadius: 5,
+      pointBackgroundColor: "#0d6efd"
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      x: { title: { display: true, text: "Time" } },
+      y: { title: { display: true, text: "Patients" }, beginAtZero: true }
+    }
+  }
+});
+
+// Store allocation history persistently
+let allocationHistory = [];
+
+function formatDateTime(dateString) {
+  if (!dateString) return '-';
+  const date = new Date(dateString);
+
+  // Display in IST (Indian Standard Time - Asia/Kolkata)
+  return new Intl.DateTimeFormat('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  }).format(date);
+}
+
+function updateLogsTable() {
+  const logsBody = document.getElementById("logs-body");
+  logsBody.innerHTML = "";
+
+  // Sort by allocated time (newest first)
+  const sortedHistory = [...allocationHistory].sort((a, b) => {
+    return new Date(b.allocated_at) - new Date(a.allocated_at);
+  });
+
+  sortedHistory.forEach(allocation => {
+    const logRow = document.createElement("tr");
+    const isActive = !allocation.deallocated_at || allocation.deallocated_at === null;
+    logRow.className = isActive ? "status-active" : "status-completed";
+
+    // ✅ Safely access patient name with fallback
+    const patientName = allocation.patient?.name || 'Unknown Patient';
+
+    logRow.innerHTML = `
+      <td>${patientName}</td>
+      <td>${allocation.resource_type}</td>
+      <td>${formatDateTime(allocation.allocated_at)}</td>
+      <td>${isActive ? '-' : formatDateTime(allocation.deallocated_at)}</td>
+      <td><span class="badge ${isActive ? 'bg-success' : 'bg-secondary'}">${isActive ? 'Active' : 'Completed'}</span></td>
+    `;
+    logsBody.appendChild(logRow);
+  });
+}
+
+const socket = new WebSocket("ws://127.0.0.1:8000/ws/resources");
+
+socket.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  console.log("WebSocket message received:", data);
+
+  if (data.type === "resource_update") {
+    const summary = data.summary;
+    document.getElementById("beds-count").textContent = summary.beds;
+    document.getElementById("icu-count").textContent = summary.icu;
+    document.getElementById("vent-count").textContent = summary.ventilators;
+    document.getElementById("oxy-count").textContent = summary.oxygen;
+    resourceChart.data.datasets[0].data = [
+      summary.beds, summary.icu, summary.ventilators, summary.oxygen
+    ];
+    resourceChart.update();
+  }
+
+  if (data.type === "active_patients") {
+    console.log("Active patients data:", data.patients);
+    const dischargeBody = document.getElementById("discharge-body");
+    dischargeBody.innerHTML = "";
+
+    // Update allocation history - merge with existing
+    data.patients.forEach(allocation => {
+      const existingIndex = allocationHistory.findIndex(
+        a => a.patient_id === allocation.patient_id && !a.deallocated_at
+      );
+
+      if (existingIndex === -1) {
+        // New allocation - add to history (ensure patient data exists)
+        if (allocation.patient) {
+          allocationHistory.push({...allocation});
+        }
+      } else {
+        // Update existing allocation (preserve patient data if missing)
+        if (allocation.patient) {
+          allocationHistory[existingIndex] = {...allocation};
+        } else {
+          // Keep old patient data if new one doesn't have it
+          allocationHistory[existingIndex] = {
+            ...allocation,
+            patient: allocationHistory[existingIndex].patient
+          };
+        }
+      }
+
+      // Add to discharge table - with safe patient name access
+      const patientName = allocation.patient?.name || 'Unknown Patient';
+      const dischargeRow = document.createElement("tr");
+      dischargeRow.innerHTML = `
+        <td>${patientName}</td>
+        <td>${allocation.resource_type}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="dischargePatient(${allocation.patient_id})">Release</button></td>
+      `;
+      dischargeBody.appendChild(dischargeRow);
+    });
+
+    // Update logs table with complete history
+    updateLogsTable();
+
+    const now = new Date().toLocaleTimeString();
+    patientChart.data.labels.push(now);
+    patientChart.data.datasets[0].data.push(data.patients.length);
+    if (patientChart.data.labels.length > 10) {
+      patientChart.data.labels.shift();
+      patientChart.data.datasets[0].data.shift();
+    }
+    patientChart.update();
+  }
+
+  if (data.type === "waiting_patients") {
+    console.log("Waiting patients data:", data.patients);
+    const tbody = document.getElementById("waiting-body");
+    tbody.innerHTML = "";
+    data.patients.forEach(p => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${p.name}</td>
+        <td>${p.age}</td>
+        <td>${p.condition}</td>
+        <td>${p.requested_resource}</td>
+        <td><span class="badge bg-danger">Waiting</span></td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+};
+
+setInterval(() => {
+  if (socket.readyState === WebSocket.OPEN) {
+    socket.send("ping");
+  }
+}, 3000);
+
+document.getElementById("patientForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const req = {
+    name: document.getElementById("name").value.trim(),
+    age: parseInt(document.getElementById("age").value),
+    condition: document.getElementById("condition").value.trim(),
+    requested_resource: document.getElementById("resource").value
+  };
+  console.log("Submitting patient request:", req);
+  if (!req.name || !req.age || !req.condition || !req.requested_resource) {
+    showToast("Please fill in all fields correctly.", "error");
+    return;
+  }
+  try {
+    const res = await fetch("http://127.0.0.1:8000/requests/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: res.statusText }));
+      console.error("Backend error:", err);
+      showToast("Failed to register patient: " + (err.detail || res.statusText), "error");
+      return;
+    }
+    const data = await res.json();
+    console.log("Backend response:", data);
+    showToast(`Patient registered successfully! Status: ${data.status}`, "success");
+    e.target.reset();
+    setTimeout(() => getInitialData(), 500);
+  } catch (error) {
+    console.error("Network or JS error:", error);
+    showToast("An error occurred while sending the request. Check console for details.", "error");
+  }
+});
+
+async function dischargePatient(patientId) {
+  try {
+    console.log("Attempting to discharge patient ID:", patientId);
+    const res = await fetch(`http://127.0.0.1:8000/requests/discharge/${patientId}`, {
+      method: "POST"
+    });
+
+    console.log("Discharge response status:", res.status);
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ detail: res.statusText }));
+      console.error("Discharge error response:", err);
+      showToast("Failed to discharge patient: " + (err.detail || res.statusText), "error", 5000);
+      return;
+    }
+
+    const data = await res.json();
+    console.log("Discharge response data:", data);
+    showToast(data.message, "success");
+
+    // Mark the patient as discharged in history with current time
+    const dischargedPatient = allocationHistory.find(
+      a => a.patient_id === patientId && !a.deallocated_at
+    );
+    if (dischargedPatient) {
+      dischargedPatient.deallocated_at = new Date().toISOString();
+    }
+
+    // Update the logs table immediately to show deallocated time
+    updateLogsTable();
+
+    // Refresh the data after a short delay
+    setTimeout(() => getInitialData(), 500);
+  } catch (error) {
+    console.error("Detailed discharge error:", error);
+    console.error("Error name:", error.name);
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
+    showToast(`Discharge error: ${error.message}. Check console for full details.`, "error", 5000);
+  }
+}
+
+async function getInitialData() {
+  try {
+    const hospitalResponse = await fetch("http://127.0.0.1:8000/hospitals/");
+    const activeResponse = await fetch("http://127.0.0.1:8000/allocations/active/1");
+    const waitingResponse = await fetch("http://127.0.0.1:8000/requests/waiting/1");
+
+    if (!hospitalResponse.ok || !activeResponse.ok || !waitingResponse.ok) {
+      throw new Error("Failed to fetch data from server");
+    }
+
+    const hospitalData = await hospitalResponse.json();
+    const activePatients = await activeResponse.json();
+    const waitingPatients = await waitingResponse.json();
+
+    console.log("Hospital data:", hospitalData);
+    console.log("Active patients:", activePatients);
+    console.log("Waiting patients:", waitingPatients);
+
+    document.getElementById("beds-count").textContent = hospitalData.available_beds;
+    document.getElementById("icu-count").textContent = hospitalData.available_icu_beds;
+    document.getElementById("vent-count").textContent = hospitalData.available_ventilators;
+    document.getElementById("oxy-count").textContent = hospitalData.available_oxygen_cylinders;
+
+    resourceChart.data.datasets[0].data = [
+      hospitalData.available_beds,
+      hospitalData.available_icu_beds,
+      hospitalData.available_ventilators,
+      hospitalData.available_oxygen_cylinders
+    ];
+    resourceChart.update();
+
+    const dischargeBody = document.getElementById("discharge-body");
+    dischargeBody.innerHTML = "";
+
+    // Try to fetch all allocations if endpoint exists
+    let allAllocations = [];
+    try {
+      const allAllocationsResponse = await fetch("http://127.0.0.1:8000/allocations/");
+      if (allAllocationsResponse.ok) {
+        allAllocations = await allAllocationsResponse.json();
+        console.log("All allocations:", allAllocations);
+        // Initialize history with all allocations from backend
+        allocationHistory = allAllocations;
+      } else {
+        // Fallback to just active patients if endpoint doesn't exist
+        allAllocations = activePatients;
+        // Merge active patients into history
+        activePatients.forEach(allocation => {
+          const existingIndex = allocationHistory.findIndex(
+            a => a.patient_id === allocation.patient_id && !a.deallocated_at
+          );
+          if (existingIndex === -1) {
+            allocationHistory.push({...allocation});
+          }
+        });
+      }
+    } catch (err) {
+      console.log("Could not fetch all allocations, using active patients only:", err);
+      // Merge active patients into history
+      activePatients.forEach(allocation => {
+        const existingIndex = allocationHistory.findIndex(
+          a => a.patient_id === allocation.patient_id && !a.deallocated_at
+        );
+        if (existingIndex === -1) {
+          allocationHistory.push({...allocation});
+        }
+      });
+    }
+
+    // Update logs table with complete history
+    updateLogsTable();
+
+    // Populate discharge table (only active patients)
+    activePatients.forEach(allocation => {
+      const patientName = allocation.patient?.name || 'Unknown Patient';
+      const dischargeRow = document.createElement("tr");
+      dischargeRow.innerHTML = `
+        <td>${patientName}</td>
+        <td>${allocation.resource_type}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="dischargePatient(${allocation.patient_id})">Release</button></td>
+      `;
+      dischargeBody.appendChild(dischargeRow);
+    });
+
+    // Populate waiting list table
+    const waitingBody = document.getElementById("waiting-body");
+    waitingBody.innerHTML = "";
+    waitingPatients.forEach(p => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${p.name}</td>
+        <td>${p.age}</td>
+        <td>${p.condition}</td>
+        <td>${p.requested_resource}</td>
+        <td><span class="badge bg-danger">Waiting</span></td>
+      `;
+      waitingBody.appendChild(row);
+    });
+  } catch (error) {
+    console.error("Failed to fetch initial hospital data:", error);
+    showToast("Failed to load initial data. Check if backend server is running.", "error");
+  }
+}
+
+window.onload = getInitialData;
+
+socket.onopen = () => console.log("WebSocket connected");
+socket.onerror = (error) => console.error("WebSocket error:", error);
+socket.onclose = () => console.log("WebSocket disconnected");
+</script>
+
+</body>
+</html>
