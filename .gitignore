@@ -1,0 +1,37 @@
+@"
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# Database
+*.db
+*.sqlite3
+
+# Environment & Config
+.env
+app/config.py
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Alembic
+alembic/versions/*.pyc
+"@ | Out-File -FilePath .gitignore -Encoding utf8
